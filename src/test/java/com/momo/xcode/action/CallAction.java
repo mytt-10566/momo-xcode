@@ -2,7 +2,7 @@ package com.momo.xcode.action;
 
 import java.util.concurrent.Callable;
 
-public class HelloWorldAction implements Callable {
+public class CallAction implements Callable {
 
     @Override
     public Object call() throws Exception {
