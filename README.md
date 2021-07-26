@@ -1,7 +1,7 @@
 # momo-xcode
 
 ## 一、介绍
-momo-xode 是一个可以在运行环境动态执行java脚本代码的一个依赖jar包，底层原理是java动态编译技术（后续增加javassist实现）。
+momo-xcode 是一个可以在运行环境动态执行java脚本代码的一个依赖jar包，底层原理是java动态编译技术（后续增加javassist实现）。
 
 通过servlet传入java code即可运行，避免了重复打包、编译、部署。
 

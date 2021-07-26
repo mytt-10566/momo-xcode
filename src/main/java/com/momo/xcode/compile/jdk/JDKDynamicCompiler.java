@@ -3,6 +3,7 @@ package com.momo.xcode.compile.jdk;
 import com.momo.xcode.common.XCodeConstant;
 import com.momo.xcode.compile.jdk.javafileobject.CharSequenceJavaFileObject;
 import com.momo.xcode.util.CodeUtil;
+import com.momo.xcode.util.MD5Util;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -11,6 +12,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JDK动态编译器
@@ -22,6 +25,11 @@ import java.util.List;
  * @date 2021/07/01
  */
 public class JDKDynamicCompiler {
+
+    /**
+     * 编译class缓存
+     */
+    private static Map<String, Class<?>> classCacheMap = new ConcurrentHashMap<>();
 
     /**
      * 编译code
@@ -56,6 +64,12 @@ public class JDKDynamicCompiler {
      * @pa
      */
     private static Class<?> generate(String code, String[] classNameInfos, String rootClassPath) throws Throwable {
+        // 0.从本地缓存获取
+        String codeMd5 = MD5Util.encode2String(code);
+        if (classCacheMap.containsKey(codeMd5)) {
+            return classCacheMap.get(codeMd5);
+        }
+
         // 1. 生成新的类名，格式：className_timestamp
         String newClassName = classNameInfos[1] + XCodeConstant.UNDER_LINE + System.currentTimeMillis();
         String newFullClassName = classNameInfos[0] + XCodeConstant.DOT + newClassName;
@@ -92,7 +106,12 @@ public class JDKDynamicCompiler {
             classLoader = new URLClassLoader(urls);
 
             // 3.2 加载class
-            return classLoader.loadClass(newFullClassName);
+            Class<?> clazz = classLoader.loadClass(newFullClassName);
+
+            // 3.3 缓存
+            classCacheMap.put(codeMd5, clazz);
+
+            return clazz;
         } catch (Exception e) {
 
         } finally {
