@@ -163,6 +163,6 @@ public class ApplyTestAction implements BiFunction<HttpServletRequest, HttpServl
 
 ## 四、后续规划
 
-- 1.支持脚本缓存，避免重复编辑加载
+- ~~已支持：1.支持脚本缓存，避免重复编辑加载~~
 - 2.增加使用javassist实现动态编译
 - ...
